@@ -1,22 +1,32 @@
 import { Router } from "express";
 import { getCustomRepository } from "typeorm";
+
 import CreateClient from "./../services/CreateClient";
 import ClientRepository from "../repositories/ClientRepository";
+import CityRepository from "../repositories/CityRepository";
 import Client from "../models/Client";
 
 const clientRouter = Router();
 
 clientRouter.post("/", async (request, response) => {
-  const { name, sex, birthDate, age, city } = request.body;
+  const { name, lastname, sex, birthDate, age, city_id } = request.body;
+
+  const cityRepository = getCustomRepository(CityRepository);
+  const city = await cityRepository.findById(city_id as string);
+
+  if (city.length == 0) {
+    return response.status(400).json({ error: "Informe uma cidade válida para este cliente." });
+  }
 
   const createClient = new CreateClient();
 
   const client = await createClient.execute({
     name,
+    lastname,
     sex,
     birthDate,
     age,
-    city,
+    city_id,
   });
 
   return response.json(client);
@@ -26,7 +36,7 @@ clientRouter.get("/", async (request, response) => {
   const { id, name } = request.query;
 
   const clientRepository = getCustomRepository(ClientRepository);
-  let client: Client[] | null = [];
+  let client: Client[] = [];
   if (!!id) {
     client = await clientRepository.findById(id as string);
   } else if (name) {

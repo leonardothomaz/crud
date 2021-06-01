@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
+import City from "./City";
 
 @Entity("client")
 class Client {
@@ -15,6 +18,9 @@ class Client {
   name?: string;
 
   @Column()
+  lastname?: string;
+
+  @Column()
   sex?: string;
 
   @Column()
@@ -23,8 +29,12 @@ class Client {
   @Column()
   age?: string;
 
-  @Column()
-  city?: string;
+  @ManyToOne(() => City)
+  @JoinColumn({ name: "city_id" })
+  city: City;
+
+  @Column("uuid")
+  city_id?: string;
 
   @CreateDateColumn()
   created_at?: Date;

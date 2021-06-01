@@ -1,23 +1,25 @@
-import { EntityRepository, Like, Repository } from "typeorm";
+import { EntityRepository, ILike, Repository } from "typeorm";
 
 import Client from "./../models/Client";
 
 @EntityRepository(Client)
 class ClientsRepository extends Repository<Client> {
-  public async findByName(name: String): Promise<Client[] | null> {
+  public async findByName(name: String): Promise<Client[]> {
     const findClient = await this.find({
-      name: Like(`%${name}%`),
+      relations: ["city"],
+      where: [{ name: ILike(`%${name}%`) }, { lastname: ILike(`%${name}%`) }],
     });
 
-    return findClient || null;
+    return findClient;
   }
 
-  public async findById(id: String): Promise<Client[] | null> {
+  public async findById(id: String): Promise<Client[]> {
     const findClient = await this.find({
+      relations: ["city"],
       where: { id },
     });
 
-    return findClient || null;
+    return findClient;
   }
 }
 

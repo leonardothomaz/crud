@@ -4,28 +4,31 @@ import Client from "./../models/Client";
 
 interface Request {
   name: string;
+  lastname: string;
   sex: string;
   birthDate: string;
   age: string;
-  city: string;
+  city_id: string;
 }
 
 class CreateClient {
   public async execute({
     name,
+    lastname,
     sex,
     birthDate,
     age,
-    city,
+    city_id,
   }: Request): Promise<Client> {
     const ClientRepository = getRepository(Client);
 
     const user = ClientRepository.create({
       name,
+      lastname,
       sex,
       birthDate,
       age,
-      city,
+      city_id,
     });
 
     await ClientRepository.save(user);
