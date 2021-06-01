@@ -4,9 +4,9 @@ import CreateClient from "./../services/CreateClient";
 import ClientRepository from "../repositories/ClientRepository";
 import Client from "../models/Client";
 
-const ClientsRouter = Router();
+const clientRouter = Router();
 
-ClientsRouter.post("/", async (request, response) => {
+clientRouter.post("/", async (request, response) => {
   const { name, sex, birthDate, age, city } = request.body;
 
   const createClient = new CreateClient();
@@ -22,7 +22,7 @@ ClientsRouter.post("/", async (request, response) => {
   return response.json(client);
 });
 
-ClientsRouter.get("/", async (request, response) => {
+clientRouter.get("/", async (request, response) => {
   const { id, name } = request.query;
 
   const clientRepository = getCustomRepository(ClientRepository);
@@ -36,7 +36,24 @@ ClientsRouter.get("/", async (request, response) => {
   return response.json(client);
 });
 
-ClientsRouter.delete("/:id", async (request, response) => {
+clientRouter.put("/:id", async (request, response) => {
+  const { id } = request.params;
+  const { updatedName } = request.body;
+
+  const clientRepository = getCustomRepository(ClientRepository);
+
+  const client = await clientRepository.findById(id as string);
+
+  if (client && client.length == 0) {
+    return response.status(400).json({ error: "Cliente não encontrado." });
+  }
+
+  clientRepository.update(id, { name: updatedName });
+
+  return response.json({ message: "Nome do cliente alterado com sucesso." });
+});
+
+clientRouter.delete("/:id", async (request, response) => {
   const { id } = request.params;
 
   const clientRepository = getCustomRepository(ClientRepository);
@@ -52,4 +69,4 @@ ClientsRouter.delete("/:id", async (request, response) => {
   return response.status(204).send();
 });
 
-export default ClientsRouter;
+export default clientRouter;
