@@ -88,7 +88,14 @@ No desenvolvimento deste projeto foi utilizado:
 > > #ou.
 > > $ npm install
 > >
-> > # Inicia o servidor da API.
+> > # Crie o container no docker ou criar um novo DB no seu postgre
+> > $ docker run --name crud_postgres -e POSTGRES_PASSWORD=suasenhaaqui -p 5432:5432 -d postgres
+> > 
+> > # Execute as migrations
+> > $ yarn typeorm migration:run
+> >
+> > # Não se esqueça de criar um arquivo .env conforme o .env.example
+> > # Iniciar o servidor da API.
 > > $ yarn dev
 > > #or.
 > > $ npm run dev
